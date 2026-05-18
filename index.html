@@ -143,7 +143,6 @@
             background: #02060d;
         }
 
-        /* カスタムスクールバー */
         .list-container::-webkit-scrollbar { width: 8px; }
         .list-container::-webkit-scrollbar-track { background: #000; }
         .list-container::-webkit-scrollbar-thumb { background: var(--border-color); }
@@ -181,29 +180,29 @@
 <body>
 
 <div class="cyber-panel">
-    <h1>[ COGNITIVE_MATH_CORE v1.4 ]</h1>
+    <h1>[ COGNITIVE_MATH_CORE v1.7 ]</h1>
     
     <div class="row">
         <div class="flex-1">
-            <label for="digits">> INPUT_DIGITS (4桁)</label>
+            <label for="digits">> 使用する4桁の数字</label>
             <input type="text" id="digits" value="6431" placeholder="6431" maxlength="4">
         </div>
-        <div style="width: 120px;">
-            <label for="target">> TARGET_VAL</label>
+        <div style="width: 130px;">
+            <label for="target">> 目標の値</label>
             <input type="number" id="target" value="10">
         </div>
     </div>
 
     <div class="toggle-row">
         <input type="checkbox" id="filter-dup" checked>
-        <label for="filter-dup">DUPLICATE_FILTER_ON (重複排除)</label>
+        <label for="filter-dup">数学的な重複を排除（計算の最適化）</label>
     </div>
 
-    <button class="cyber-btn" onclick="solvePuzzle()">EXECUTE_SEARCH()</button>
+    <button class="cyber-btn" onclick="solvePuzzle()">数式を全探索（EXECUTE）</button>
 </div>
 
 <div class="cyber-panel">
-    <div id="output-header">> CONSOLE_OUTPUT: 待機中...</div>
+    <div id="output-header">> コンソール出力: 待機中...</div>
     <div class="list-container" id="result-list"></div>
 </div>
 
@@ -226,7 +225,7 @@ function solvePuzzle() {
     listContainer.innerHTML = '';
 
     if (digitsInput.length !== 4 || !/^\d+$/.test(digitsInput)) {
-        alert('ERROR: 4桁の数値を入力してください。');
+        alert('エラー：4桁の数字を正確に入力してください。');
         return;
     }
 
@@ -276,10 +275,10 @@ function solvePuzzle() {
     }
 
     const solutionsArray = Array.from(uniqueSolutions).sort();
-    outputHeader.innerText = `> SOLUTIONS_FOUND: ${solutionsArray.length} CELLS MATCHED`;
+    outputHeader.innerText = `> 検索完了: ${solutionsArray.length} 個の数式を検出`;
 
     if (solutionsArray.length === 0) {
-        listContainer.innerHTML = '<div class="item" style="color: #ef4444;">> STATUS: NO_MATCHES_FOUND</div>';
+        listContainer.innerHTML = '<div class="item" style="color: #ef4444;">> ステータス: 該当する数式なし</div>';
         return;
     }
 
@@ -292,11 +291,11 @@ function solvePuzzle() {
         
         const btn = document.createElement('button');
         btn.className = 'copy-btn';
-        btn.innerText = 'COPY';
+        btn.innerText = 'コピー';
         btn.onclick = () => {
             navigator.clipboard.writeText(`${sol} = ${target}`);
-            btn.innerText = 'COPIED';
-            setTimeout(() => btn.innerText = 'COPY', 1000);
+            btn.innerText = '完了';
+            setTimeout(() => btn.innerText = 'コピー', 1000);
         };
 
         item.appendChild(code);
