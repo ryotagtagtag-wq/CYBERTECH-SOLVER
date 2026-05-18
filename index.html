@@ -180,16 +180,20 @@
 <body>
 
 <div class="cyber-panel">
-    <h1>[ COGNITIVE_MATH_CORE v1.7 ]</h1>
+    <h1>[ COGNITIVE_MATH_CORE v1.9 ]</h1>
     
     <div class="row">
-        <div class="flex-1">
+        <div style="flex: 2;">
             <label for="digits">> 使用する4桁の数字</label>
             <input type="text" id="digits" value="6431" placeholder="6431" maxlength="4">
         </div>
-        <div style="width: 130px;">
-            <label for="target">> 目標の値</label>
+        <div style="flex: 1;">
+            <label for="target">> 目標値</label>
             <input type="number" id="target" value="10">
+        </div>
+        <div style="flex: 1;">
+            <label for="max-results">> 最大件数</label>
+            <input type="number" id="max-results" value="5" min="1" max="500">
         </div>
     </div>
 
@@ -218,6 +222,7 @@ function standardize(expr) {
 function solvePuzzle() {
     const digitsInput = document.getElementById('digits').value;
     const target = parseFloat(document.getElementById('target').value);
+    const maxResults = parseInt(document.getElementById('max-results').value, 10) || 5;
     const filterDup = document.getElementById('filter-dup').checked;
     const listContainer = document.getElementById('result-list');
     const outputHeader = document.getElementById('output-header');
@@ -245,11 +250,11 @@ function solvePuzzle() {
             for (const op2 of operators) {
                 for (const op3 of operators) {
                     const templates = [
-                        `(((${p} ${op1} ${p}) ${op2} ${p}) ${op3} ${p})`,
-                        `((${p} ${op1} (${p} ${op2} ${p})) ${op3} ${p})`,
-                        `(${p} ${op1} ((${p} ${op2} ${p}) ${op3} ${p}))`,
-                        `(${p} ${op1} (${p} ${op2} (${p} ${op3} ${p})))`,
-                        `((${p} ${op1} ${p}) ${op2} (${p} ${op3} ${p}))`
+                        `(((${p[0]} ${op1} ${p[1]}) ${op2} ${p[2]}) ${op3} ${p[3]})`,
+                        `((${p[0]} ${op1} (${p[1]} ${op2} ${p[2]})) ${op3} ${p[3]})`,
+                        `(${p[0]} ${op1} ((${p[1]} ${op2} ${p[2]}) ${op3} ${p[3]}))`,
+                        `(${p[0]} ${op1} (${p[1]} ${op2} (${p[2]} ${op3} ${p[3]})))`,
+                        `((${p[0]} ${op1} ${p[1]}) ${op2} (${p[2]} ${op3} ${p[3]}))`
                     ];
 
                     for (const expr of templates) {
@@ -275,14 +280,19 @@ function solvePuzzle() {
     }
 
     const solutionsArray = Array.from(uniqueSolutions).sort();
-    outputHeader.innerText = `> 検索完了: ${solutionsArray.length} 個の数式を検出`;
+    
+    // 指定した最大件数で切り取る
+    const totalFound = solutionsArray.length;
+    const limitedSolutions = solutionsArray.slice(0, maxResults);
+    
+    outputHeader.innerText = `> 検索完了: ヒットした全 ${totalFound} 件中、上位 ${limitedSolutions.length} 件を表示`;
 
-    if (solutionsArray.length === 0) {
+    if (limitedSolutions.length === 0) {
         listContainer.innerHTML = '<div class="item" style="color: #ef4444;">> ステータス: 該当する数式なし</div>';
         return;
     }
 
-    solutionsArray.forEach(sol => {
+    limitedSolutions.forEach(sol => {
         const item = document.createElement('div');
         item.className = 'item';
         
